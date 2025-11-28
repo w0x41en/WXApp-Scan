@@ -15,7 +15,7 @@ File_Config:
   Unpack_Method: wxapkg
 
   # wxapkg 配置
-  Wxapkg_Path: D:\Tools\wxapkg
+  Wxapkg_Path: model/wxapkg
   Wxapkg_Program_Name: wxapkg_1.5.0_windows_amd64.exe
   Wxapkg_Threads: 30
   Wxapkg_Disable_Beautify: false
@@ -53,6 +53,7 @@ File_Config:
 
 # 正则配置
 Regex_Config:
+  Additional_Secret_Rules_File: config/secret_rules.yaml
   App_Name_regex: '"navigationBarTitleText": "(.*)",'
 
   # 常见顶级域名匹配（case-insensitive，限制标签长度以减少误报）

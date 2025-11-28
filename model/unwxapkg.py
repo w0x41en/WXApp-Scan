@@ -4,7 +4,7 @@ import time
 import platform
 import subprocess
 import config
-from model import infoFinder
+from model import info_finder
 
 
 def monitor_folder(all_config):
@@ -24,7 +24,7 @@ def monitor_folder(all_config):
                 print("等待程序下载...")
                 time.sleep(File_Config['Sleep_Time'])   # 等待程序下载
                 Applet_Packet_Save_Folder = unpacket(WX_Applet_Path, son_folder, File_Config)
-                infoFinder.infoFinder(Applet_Packet_Save_Folder, all_config)
+                info_finder.run_info_finder(Applet_Packet_Save_Folder, all_config)
         else:
             print(before)
         before = after

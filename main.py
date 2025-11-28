@@ -1,7 +1,7 @@
 import argparse
 import os
 import sys
-from model import unwxapkg, config, infoFinder
+from model import unwxapkg, config, info_finder
 
 EXAMPLE_USAGE = """
 示例:
@@ -24,7 +24,7 @@ def ensure_path_exists(path, hint):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
-        description="folder-infoFinder: 解包 (可选) 并扫描微信小程序代码中的敏感信息。",
+        description="folder-info-finder: 解包 (可选) 并扫描微信小程序代码中的敏感信息。",
         epilog=EXAMPLE_USAGE,
         formatter_class=argparse.RawDescriptionHelpFormatter
     )
@@ -47,9 +47,9 @@ if __name__ == '__main__':
         mon_folder = os.path.dirname(target_path)
         son_folder = os.path.basename(target_path)
         Applet_Packet_Save_Folder = unwxapkg.unpacket(mon_folder, son_folder, all_config['File_Config'])
-        infoFinder.infoFinder(Applet_Packet_Save_Folder, all_config)
+        info_finder.run_info_finder(Applet_Packet_Save_Folder, all_config)
     elif args.mode == 'mf':
         unwxapkg.monitor_folder(all_config)
     elif args.mode == 'sf':
         target_path = ensure_path_exists(args.folder_path, "待扫描的文件夹")
-        infoFinder.infoFinder(target_path, all_config)
+        info_finder.run_info_finder(target_path, all_config)
