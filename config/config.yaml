@@ -1,0 +1,158 @@
+# 规则参考的优秀项目
+# https://github.com/kelvinBen/AppInfoScanner
+# https://github.com/momosecurity/FindSomething
+# https://github.com/gh0stkey/HaE
+# https://github.com/moyuwa/wechat_appinfo_wxapkg
+
+# 文件相关配置
+File_Config:
+  WX_Applet_Path: C:\Users\User\AppData\Roaming\Tencent\xwechat\radium\Applet\packages
+  Sleep_Time: 10
+  Applet_Packet_Save_Path: app_code
+  Excel_Folder: output
+
+  # 解包方式：wxapkg | unveilr
+  Unpack_Method: wxapkg
+
+  # wxapkg 配置
+  Wxapkg_Path: D:\Tools\wxapkg
+  Wxapkg_Program_Name: wxapkg_1.5.0_windows_amd64.exe
+  Wxapkg_Threads: 30
+  Wxapkg_Disable_Beautify: false
+
+  # unveilr 配置（兼容旧流程）
+  Unveilr_Depth: 2
+  Unveilr_Path: model/unveilr
+  Unveilr_Program_Name: unveilr@2.0.1-win-x64.exe
+
+  # 默认使用黑名单且优先级高
+  Black_Suffix_list:
+    active: true
+    suffix_list:
+      - jpg
+      - jpeg
+      - png
+      - mp3
+      - mp4
+      - gif
+      - bmp
+      - webp
+      - avi
+      - mov
+      - flv
+      - wmv
+      - mkv
+      - wxss
+  White_Suffix_list:
+    active: false
+    suffix_list:
+      - js
+      - html
+      - json
+
+
+# 正则配置
+Regex_Config:
+  App_Name_regex: '"navigationBarTitleText": "(.*)",'
+
+  # 常见顶级域名匹配（case-insensitive，限制标签长度以减少误报）
+  Domain_regex: '(?i)\b(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+(?:com|net|org|edu|gov|info|xyz|top|cn|cc|vip|io|ai|co|me)(?::\d{1,5})?\b'
+
+  # url识别模块（避免贪婪匹配空白/引号）
+  Url_regex: '(?i)\b(?:(?:https?|ftp)://|www\.)[a-z0-9.-]+(?::\d{1,5})?(?:/[^\s"''<>]*)?\b'
+
+  # uri路由（更快的路径捕获）
+  Uri_regex: '(["''])(?:/|\.{1,2}/)[A-Za-z0-9_\-./?%=&+#]+\1'
+
+  # ip地址
+  Private_Ip_regex: '\b((127\.0\.0\.1)|(10(?:\.(?:2(?:5[0-5]|[0-4]\d)|1\d{2}|[1-9]\d|\d)){3})|(172\.((1[6-9])|(2\d)|(3[01]))(?:\.(?:2(?:5[0-5]|[0-4]\d)|1\d{2}|[1-9]\d|\d)){2})|(192\.168(?:\.(?:2(?:5[0-5]|[0-4]\d)|1\d{2}|[1-9]\d|\d)){2}))\b'
+  Ip_regex: '\b(?:(?:2[0-4]\d|25[0-5]|[01]?\d{1,2})\.){3}(?:2[0-4]\d|25[0-5]|[01]?\d{1,2})\b'
+
+  # 敏感信息识别
+  Person_ID_regex: '\b[1-9]\d{5}[1-2]\d{3}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])\d{3}[0-9Xx]\b'
+  Phone_Num_regex: '\b1[3-9]\d{9}\b'
+  Email_regex: '\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b'
+
+  # 宁可错杀不可放过系列
+  Account_regex: '(?:账[号户]|[Aa]ccount).{,30}'
+  Passwd_regex: '(?:密码|[Pp]assw(?:or)?d).{,30}'
+  Test_regex: '(?:测试)[^\r\n]{0,50}'
+  # api/access/secret/my key/id/value/token 大杂烩 超赞！
+  AK_regex: '(?i)(?:api|access|secret|token|key|client)[^\r\n]{0,20}(?:key|id|token|secret|pwd|pass)[^\r\n]{0,80}'
+  Github_Access_Token_regex: '[A-Za-z0-9._-]+:[A-Za-z0-9._-]+@github\.com'
+  Js_Comment_regex: '// .*'
+  Private_Key_regex: '(?:-----BEGIN [^-\s]+ PRIVATE KEY-----)'
+  Jwt_regex: '(["''])(eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9._-]{10,}\.[A-Za-z0-9._-]{10,})\1'
+
+  # 敏感函数
+  Crypto_regex: ([Ee]ncrypt\(|[Dd]ecrypt\()
+  #Crypto_regex: \W(Base64\.encode|Base64\.decode|btoa|atob|CryptoJS\.AES|CryptoJS\.DES|JSEncrypt|rsa|KJUR|$\.md5|md5|sha1|sha256|sha512)[\(\.]
+
+
+# URL/API自动验活配置
+Request_Config:
+  # 自动验活开关
+  request_active: false
+  request_threads: 50
+
+  # 去除一些常用遇到的域名, 正则or字符串, 黑白名单只取其一，白名单优先级高
+  hostname_filter_rule:
+    allowed: []
+    disallowed:
+      - github.com
+      - baidu.com
+      - google.com
+      - qq.com
+  # 去除一些ip, 正则or字符串, 黑白名单只取其一，白名单优先级高
+  ip_filter_rule:
+    allowed: []
+    disallowed:  # 默认不扫描内网ip
+      - ((127\.0\.0\.1)|(10(?:\.(?:2(?:5[0-5]|[0-4]\d)|1\d{2}|[1-9]\d|\d)){3})|(172\.((1[6-9])|(2\d)|(3[01]))(?:\.(?:2(?:5[0-5]|[0-4]\d)|1\d{2}|[1-9]\d|\d)){2})|(192\.168(?:\.(?:2(?:5[0-5]|[0-4]\d)|1\d{2}|[1-9]\d|\d)){2}))(?!\d)
+
+  # 是否开启手动筛选domain
+  manual_filter: true
+
+  # uri的过滤规则
+  uri_filter_rule:
+    allowed: []
+    disallowed: # 默认去除带 del (删除) 字样的uri
+      - del
+  # url拼凑规则
+  scrabbled_rule: []
+
+  # 请求的方式
+  http_methods:
+    - GET
+    - POST
+  headers:
+    User-Agent: powered by vv4ke
+    Connection: close
+  cookies:
+    test_cookie: test
+  params:
+#    test: test
+  json:
+    test_json: test
+  # 允许自动跳转
+  allow_redirects: false
+  timeout: 10
+  verify: false
+  proxies:
+    http: http://127.0.0.1:10809
+#    https: https://127.0.0.1:8080
+
+#  结果输出配置
+  include_status_code:
+    - 20x
+    - 30x
+    - 40x
+    - 50x
+
+
+  # 非 200 页面尝试绕过
+  bypass_config:
+
+
+# 基本漏洞扫描
+Vuln_Scan_Config:
+  vulscan_active: false
